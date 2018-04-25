@@ -1,0 +1,21 @@
+---
+- title: 'Test 1'
+  description: 'This is the first test.'
+  total_members: 20
+  round_period: 2592000
+  round_fee: 20000
+  upset_price: 300
+  rounds_started_after: 60
+  bidding_ended_after: 1728000
+  rounds_start_date_time: "2018-04-23T09:33:27+00:00"
+  current_round_id: 2
+- title: 'Test 2'
+  description: null
+  total_members: 20
+  round_period: 864000
+  round_fee: 10000
+  upset_price: 100
+  rounds_started_after: 10
+  bidding_ended_after: 432000
+  rounds_start_date_time: "2018-04-24T09:33:27+00:00"
+  current_round_id: null
