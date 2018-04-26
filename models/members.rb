@@ -8,6 +8,8 @@ module BiauHuei
   class Member < Sequel::Model
     many_to_one :group
     #one_to_one :user
+
+    plugin :timestamps
     
     # rubocop:disable MethodLength
     def to_json(options = {})
