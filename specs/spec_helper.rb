@@ -12,5 +12,5 @@ def wipe_database
 end
 
 DATA = {}
-DATA[:groups] = YAML.safe_load FILE.read('db/seeds/group_seeds.yml')
-DATA[:members] = YAML.safe_load FILE.read('db/seeds/member_seeds.yml')
+DATA[:groups] = YAML.safe_load File.read('db/seeds/group_seeds.yml')
+DATA[:members] = YAML.safe_load File.read('db/seeds/member_seeds.yml')

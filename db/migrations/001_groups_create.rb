@@ -7,8 +7,8 @@ Sequel.migration do
     create_table(:groups) do
       primary_key :id
       
-      String :title, null: false
-      String :description
+      String :title_secure, null: false
+      String :description_secure
       
       Integer :total_members, null: false
       Float :round_period, null: false

@@ -3,9 +3,6 @@
 require 'roda'
 require 'json'
 
-require_relative 'config/environments.rb'
-require_relative 'models/init'
-
 module BiauHuei
   # Web controller for BiauHuei API
   class Api < Roda
@@ -34,16 +31,20 @@ module BiauHuei
           
             # POST api/v1/groups
             routing.post do
+                
               new_data = JSON.parse(routing.body.read)
               new_group = Group.new(new_data)
-          
-              if new_group.save
-                response.status = 201
-                response['Location'] = "#{@group_route}/#{new_group.id}"
-                { message: 'Group saved', data: new_group }.to_json
-              else
-                routing.halt 400, { message: 'Could not save group' }.to_json
-              end
+              new_group.save
+              response.status = 201
+              response['Location'] = "#{@group_route}/#{new_group.id}"
+              { message: 'Group saved', data: new_group }.to_json
+                
+            rescue Sequel::MassAssignmentRestriction
+              routing.halt 400, { message: 'Illegal Request' }.to_json
+                
+            rescue StandardError => error
+              routing.halt 500, { message: error.message }.to_json
+                
             end
           end
           
@@ -70,17 +71,25 @@ module BiauHuei
 
                 # POST api/v1/groups/[group_id]/members
                 routing.post do
+                    
                   new_data = JSON.parse(routing.body.read)
                   group = Group.first(id: group_id)
                   new_member = group.add_member(new_data)
-
-                  if new_member
-                    response.status = 201
-                    response['Location'] = "#{@member_route}/#{new_member.id}"
-                    { message: 'Member added', data: new_member }.to_json
-                  else
-                    routing.halt 400, { message: 'Could not add member' }.to_json
+                  response.status = 201
+                  response['Location'] = "#{@member_route}/#{new_member.id}"
+                  { message: 'Member added', data: new_member }.to_json
+                
+                rescue Sequel::MassAssignmentRestriction
+                  routing.halt 400, { message: 'Illegal Request' }.to_json
+                
+                rescue NoMethodError
+                  if group == nil
+                    routing.halt 404, { message: 'The group is not existed' }.to_json
                   end
+                      
+                rescue StandardError => error
+                  routing.halt 400, { message: 'Could not add member' }.to_json
+                
                 end
               end
               

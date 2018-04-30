@@ -8,9 +8,28 @@ module BiauHuei
   class Group < Sequel::Model
     one_to_many :members
     plugin :association_dependencies, members: :destroy
-
+      
     plugin :timestamps
+      
+    plugin  :whitelist_security
+    set_allowed_columns :name, :title, :description, :total_members, :round_period, :round_fee, :upset_price, :rounds_started_after, :bidding_ended_after
     
+    def title
+      SecureDB.decrypt(self.title_secure)
+    end
+
+    def title=(plaintext)
+      self.title_secure = SecureDB.encrypt(plaintext)
+    end
+
+    def description
+      SecureDB.decrypt(self.description_secure)
+    end
+
+    def description=(plaintext)
+      self.description_secure = SecureDB.encrypt(plaintext)
+    end
+        
     # rubocop:disable MethodLength
     def to_json(options = {})
       JSON(
@@ -19,8 +38,8 @@ module BiauHuei
             type: 'group',
             attributes: {
               id: id,
-              title: title,
-              description: description,
+              title: title, # encrypt
+              description: description, # encrypt
               total_members: total_members,
               round_period: round_period,
               round_fee: round_fee,
