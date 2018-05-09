@@ -37,6 +37,7 @@ module BiauHuei
       end
       
       SecureDB.setup(config)
+      #BidsManager.setup(config)
     end
   end
 end

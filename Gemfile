@@ -21,6 +21,9 @@ group :development, :test do
   gem 'sqlite3'
 end
 
+# DateTime
+gem 'ruby-duration'
+
 # Development
 group :development do
   gem'rubocop'
@@ -35,4 +38,5 @@ end
 
 group :development, :test do
   gem 'rerun'
+  gem 'sequel-seed'
 end

@@ -1,18 +1,29 @@
 # frozen_string_literal: true
 
 require 'json'
-require  'sequel'
+require 'sequel'
 
 module BiauHuei
   # Models a group
   class Group < Sequel::Model
-    one_to_many :members
-    plugin :association_dependencies, members: :destroy
+    
+    many_to_one :leader, class: :'BiauHuei::Account'
+    
+    many_to_many :members, class: :'BiauHuei::Account',
+                 join_table: :accounts_groups,
+                 left_key: :group_id,  right_key: :member_id
       
-    plugin :timestamps
+    one_to_many :bids
+    
+    
+    plugin :association_dependencies
+    add_association_dependencies bids: :destroy, members: :nullify
+      
+    plugin :timestamps, update_on_create: true
       
     plugin  :whitelist_security
-    set_allowed_columns :name, :title, :description, :total_members, :round_period, :round_fee, :upset_price, :rounds_started_after, :bidding_ended_after
+    set_allowed_columns :name, :title, :description, :round_interval, :round_fee, :bidding_duration, :bidding_upset_price
+    
     
     def title
       SecureDB.decrypt(self.title_secure)
@@ -40,14 +51,10 @@ module BiauHuei
               id: id,
               title: title, # encrypt
               description: description, # encrypt
-              total_members: total_members,
-              round_period: round_period,
+              round_interval: round_interval,
               round_fee: round_fee,
-              upset_price: upset_price,
-              rounds_started_after: rounds_started_after,
-              bidding_ended_after: bidding_ended_after,
-              rounds_start_date_time: rounds_start_date_time,
-              current_round_id: current_round_id,
+              bidding_duration: bidding_duration,
+              bidding_upset_price: bidding_upset_price,
             }
           }
         }, options
