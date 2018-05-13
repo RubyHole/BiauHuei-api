@@ -32,5 +32,17 @@ module BiauHuei
       try_hashed = SecureDB.hash_password(salt, try_password)
       try_hashed == password_hash
     end
+    
+    def to_json(options = {})
+      JSON.pretty_generate(
+        {
+          type: 'account',
+          id: id,
+          username: username,
+          email: email
+        }, options
+      )
+    end
+    
   end
 end

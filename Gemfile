@@ -9,6 +9,8 @@ gem 'json'
 # Configuration
 gem 'econfig'
 gem 'rake'
+
+# Diagnostic
 gem 'pry'
 
 # Security
