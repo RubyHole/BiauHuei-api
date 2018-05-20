@@ -21,6 +21,8 @@ module BiauHuei
           response.status = 201
           response['Location'] = "#{@group_route}/#{new_group.id}/account/#{new_group.leader.id}"
           { message: 'Group saved', data: new_group }.to_json
+        rescue ArgumentError
+          r.halt 400, { message: 'Illegal Request' }.to_json
         rescue Sequel::MassAssignmentRestriction
           r.halt 400, { message: 'Illegal Request' }.to_json
         rescue StandardError => error
@@ -34,6 +36,7 @@ module BiauHuei
         r.get do
           GetGroupInfo.call(group_id: group_id, account_id: account_id, time: Time.new())
         rescue StandardError => error
+          puts error.backtrace
           r.halt 404, { message: error.message }.to_json
         end
       end

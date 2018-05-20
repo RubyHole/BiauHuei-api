@@ -12,6 +12,7 @@ gem 'rake'
 
 # Diagnostic
 gem 'pry'
+gem 'rack-test'
 
 # Security
 gem 'rbnacl-libsodium'
@@ -21,6 +22,11 @@ gem 'sequel'
 gem 'hirb'
 group :development, :test do
   gem 'sqlite3'
+  gem 'sequel-seed'
+end
+
+group :production do
+  gem 'pg'
 end
 
 # DateTime
@@ -35,10 +41,9 @@ end
 group :test do
   gem 'minitest'
   gem 'minitest-rg'
-  gem 'rack-test'
+  gem 'timecop'
 end
 
 group :development, :test do
   gem 'rerun'
-  gem 'sequel-seed'
 end

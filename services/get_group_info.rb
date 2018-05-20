@@ -7,43 +7,57 @@ module BiauHuei
   class GetGroupInfo
     
     def self.call(group_id:, account_id:, time:)
-      group = Group.first(id: group_id)
-      account = Account.first(id: account_id)
+      instance = new(group_id: group_id, account_id: account_id, time: time)
+      instance.to_json()
+    end
+    
+    def initialize(group_id:, account_id:, time:)
+      @group_id = group_id
+      @account_id = account_id
+      @time = time
       
-      bids_manager = BidsManager.new(group, time)
-      
+      @group = Group.first(id: @group_id)
+      @account = Account.first(id: @account_id)
+      @bids_manager = BidsManager.new(@group, @time).auto_bid
+    end
+    
+    attr_accessor :group_id, :account_id, :time, :group, :account, :bids_manager
+    
+    def to_json
       JSON.pretty_generate(
         {
           account_id: account_id,
           title: group.title,
           description: group.description,
+          members: bids_manager.members,
           start_datetime: group.created_at,
           round_interval: Duration.new(group.round_interval).iso8601,
           round_base_fee: group.round_fee.to_s,
           bidding_duration: Duration.new(group.bidding_duration).iso8601,
           bidding_upset_price: group.bidding_upset_price.to_s,
-          current_round_id: self.current_round_id(bids_manager),
-          rounds: self.rounds(group, bids_manager, account_id),
+          current_round_id: current_round_id,
+          rounds: rounds,
         }
       )
     end
     
-    def self.current_round_id(bids_manager)
+    def current_round_id
       rid = bids_manager.current_round_id
       rid.nil? ? 'Finished' : rid.to_s
     end
     
-    def self.rounds(group, bids_manager, account_id)
+    def rounds
       rounds = []
-      rounds.append(self.first_round_info(group))
-      rounds += self.rounds_info(group, bids_manager, account_id)
+      rounds.append(first_round_info)
+      rounds += rounds_info
       rounds
     end
     
-    def self.first_round_info(group)
+    def first_round_info
       {
         'round_id': 0.to_s,
         'is_finish': 'true',
+        'total_saving': group.round_fee * group.members.length,
         'number_of_bids': 1.to_s,
         'winner': {
           'username': group.leader.username,
@@ -58,24 +72,25 @@ module BiauHuei
       }
     end
     
-    def self.rounds_info(group, bids_manager, account_id)
+    def rounds_info
       bids_manager.round_ids.map do |round_id|
         {
           'round_id': round_id.to_s,
           'is_finish': bids_manager.is_round_finished(round_id).to_s,
+          'total_saving': bids_manager.total_saving(round_id),
           'number_of_bids': bids_manager.bids_by_round(round_id).length,
-          'winner': self.get_winner(bids_manager, round_id),
+          'winner': get_winner(round_id),
           'user': {
             round_fee: bids_manager.round_fee(round_id, account_id),
             latest_bid: bids_manager.latest_bid(round_id, account_id),
             bids_log: bids_manager.bids_by_round_id_account_id(round_id, account_id),
-            is_allowed_to_bid: bids_manager.is_won_a_bid(account_id),
+            is_allowed_to_bid: bids_manager.is_allowed_to_bid(round_id, account_id),
           },
         }
       end
     end
     
-    def self.get_winner(bids_manager, round_id)
+    def get_winner(round_id)
       highest_bid = bids_manager.highest_bid(round_id)
       return nil if highest_bid.nil?
       {

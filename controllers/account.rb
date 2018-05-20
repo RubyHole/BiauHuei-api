@@ -40,6 +40,7 @@ module BiauHuei
           r.halt 409, { message: 'Account Exists' }.to_json
         rescue StandardError => error
           puts error.inspect
+          puts error.backtrace
           r.halt 500, { message: error.message }.to_json
         end
       end

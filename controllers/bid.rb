@@ -21,6 +21,8 @@ module BiauHuei
           response.status = 201
           response['Location'] = "#{@api_root}/group/#{new_bid.group.id}/account/#{new_bid.account.id}"
           { message: 'Bid saved', data: new_bid }.to_json
+        rescue ArgumentError
+          r.halt 400, { message: 'Illegal Request' }.to_json
         rescue Sequel::MassAssignmentRestriction
           r.halt 400, { message: 'Illegal Request' }.to_json
         rescue StandardError => error

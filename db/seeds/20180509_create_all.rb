@@ -1,23 +1,17 @@
 # frozen_string_literal: true
 
-Sequel.seed(:development) do
+Sequel.seed(:development, :test) do
   def run
-    puts 'Seeding accounts, projects, documents'
+    puts 'Seeding database...'
     create_accounts
     create_groups
-    #create_owned_projects
-    #create_documents
-    #add_collaborators
   end
 end
 
 require 'yaml'
-DIR = File.dirname(__FILE__)
-ACCOUNTS_INFO = YAML.load_file("#{DIR}/account_seeds.yml")
-GROUPS_INFO = YAML.load_file("#{DIR}/group_seeds.yml")
-#PROJ_INFO=YAML.load_file("#{DIR}/projects_seed.yml")
-#DOCUMENT_INFO=YAML.load_file("#{DIR}/documents_seed.yml")
-#CONTRIB_INFO=YAML.load_file("#{DIR}/projects_collaborators.yml")
+DIR = File.dirname(__FILE__) unless defined? DIR
+ACCOUNTS_INFO = YAML.load_file("#{DIR}/account_seeds.yml") unless defined? ACCOUNTS_INFO
+GROUPS_INFO = YAML.load_file("#{DIR}/group_seeds.yml") unless defined? GROUPS_INFO
 
 def create_accounts
   ACCOUNTS_INFO.each do |account_info|

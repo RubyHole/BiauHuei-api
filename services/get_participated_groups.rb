@@ -7,16 +7,16 @@ module BiauHuei
   class GetParticipatedGroups
     
     def self.call(account_id:, time:)
-      instance = self.new(account_id: account_id, time: time)
+      instance = new(account_id: account_id, time: time)
       instance.to_json()
     end
-    
-    attr_accessor :account_id, :time
     
     def initialize(account_id:, time:)
       @account_id = account_id
       @time = time
     end
+    
+    attr_accessor :account_id, :time
       
     def to_json()
       account = Account.first(id: @account_id)
