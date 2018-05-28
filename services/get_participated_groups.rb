@@ -24,7 +24,6 @@ module BiauHuei
       
       JSON.pretty_generate(
         {
-          account_id: @account_id,
           leaded_groups: account.leaded_groups.map { |group| get_group_info(group) },
           participated_groups: account.participated_groups.map { |group| get_group_info(group) },
         }
@@ -33,6 +32,7 @@ module BiauHuei
     
     def get_group_info(group)
       {
+        id: group.id.to_s,
         title: group.title,
         leader: group.leader.username,
         created_at: group.created_at,

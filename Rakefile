@@ -36,14 +36,15 @@ task :run_dev do
 end
 
 namespace :db do
-  require_relative 'lib/init' # load libraries
-  require_relative 'config/init' # load config info
-  
-  app = BiauHuei::Api
   
   task :setup do
     require 'sequel'
     Sequel.extension :migration
+    
+    require_relative 'lib/init' # load libraries
+    require_relative 'config/init' # load config info
+  
+    app = BiauHuei::Api
   end
   
   task :load_models do
@@ -92,7 +93,13 @@ end
 namespace :crypto do
   desc 'Create sample cryptographic key for database'
   task :db_key do
-    require './init.rb'
+    require_relative 'lib/secure_db'
     puts "DB_KEY: #{SecureDB.generate_key}"
+  end
+  
+  desc 'Create sample cryptographic key for tokens and messaging'
+  task :msg_key do
+    require_relative 'lib/auth_token'
+    puts "MSG_KEY: #{AuthToken.generate_key}"
   end
 end

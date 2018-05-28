@@ -26,9 +26,9 @@ module BiauHuei
     def to_json
       JSON.pretty_generate(
         {
-          account_id: account_id,
           title: group.title,
           description: group.description,
+          leader: bids_manager.leader,
           members: bids_manager.members,
           start_datetime: group.created_at,
           round_interval: Duration.new(group.round_interval).iso8601,
@@ -56,6 +56,9 @@ module BiauHuei
     def first_round_info
       {
         'round_id': 0.to_s,
+        'start_date': group.created_at,
+        'end_date': group.created_at,
+        'bidding_end_date': group.created_at,
         'is_finish': 'true',
         'total_saving': group.round_fee * group.members.length,
         'number_of_bids': 1.to_s,
@@ -67,7 +70,7 @@ module BiauHuei
           round_fee: group.round_fee.to_s,
           latest_bid: nil,
           bids_log: [],
-          is_allowed_to_bid: false.to_s,
+          is_allowed_to_bid: false,
         },
       }
     end
@@ -76,6 +79,9 @@ module BiauHuei
       bids_manager.round_ids.map do |round_id|
         {
           'round_id': round_id.to_s,
+          'start_date': bids_manager.start_date(round_id),
+          'end_date': bids_manager.end_date(round_id),
+          'bidding_end_date': bids_manager.bidding_end_date(round_id),
           'is_finish': bids_manager.is_round_finished(round_id).to_s,
           'total_saving': bids_manager.total_saving(round_id),
           'number_of_bids': bids_manager.bids_by_round(round_id).length,

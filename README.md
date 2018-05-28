@@ -7,11 +7,13 @@ API to securely store and retrieve the bids information for private ROSCAs playe
 All routes return Json
 
 - GET `/`: Root route shows if Web API is running
-- GET `api/v1/account/[account_id]/groups`: returns leaded or participated groups for the given account ID
-- GET `api/v1/group/[group_id]/account/[account_id]`: returns the assigned group information for the given account ID
-- POST `api/v1/account/authenticate`: authenticates with a given account
-- POST `api/v1/account/new`: creates a new account
-- POST `api/v1/group/new`: creates a new group
+- GET `api/v1/accounts/username/[username]`: checks whether an [username] is existed
+- GET `api/v1/groups`: returns leaded or participated groups
+- GET `api/v1/groups/[group_id]`: returns the assigned group information
+- POST `api/v1/auth/register`: email verification of registration
+- POST `api/v1/accounts/authenticate`: authenticates with a given account
+- POST `api/v1/accounts/new`: creates a new account
+- POST `api/v1/groups/new`: creates a new group
 - POST `api/v1/bid/new`: submits a bid
 
 ## Install

@@ -36,8 +36,8 @@ module BiauHuei
         DB
       end
       
-      SecureDB.setup(config)
-      #BidsManager.setup(config)
+      SecureDB.setup(config.DB_KEY)
+      AuthToken.setup(config.MSG_KEY)
     end
   end
 end

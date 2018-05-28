@@ -26,7 +26,14 @@ class BidsManager
     @round_id_map = __get_round_id_map__(group)
     @account_id_map = __get_account_id_map__(group)
   end
-    
+  
+  def leader
+    {
+      username: @group.leader.username,
+      email: @group.leader.email,
+    }
+  end
+  
   def members
     @group.members.map do |member|
       {
@@ -36,10 +43,21 @@ class BidsManager
     end
   end
   
+  def start_date(round_id)
+    @group.created_at + @group.round_interval * (round_id - 1)
+  end
+  
+  def end_date(round_id)
+    @group.created_at + @group.round_interval * round_id 
+  end
+  
+  def bidding_end_date(round_id)
+    @group.created_at + @group.round_interval * (round_id - 1) + @group.bidding_duration
+  end
+  
   def bids
     bids = @group.bids.map do |bid|
       {
-        account_id: bid.account_id,
         bid_price: bid.bid_price,
         created_at: bid.created_at,
       }
