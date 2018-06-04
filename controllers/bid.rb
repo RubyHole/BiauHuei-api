@@ -16,13 +16,16 @@ module BiauHuei
         # Post api/v1/bid/new
         r.post do
           new_data = JsonRequestBody.parse_symbolize(request.body.read)
+                                    .merge(auth_account: @auth_account)
           new_bid = CreateBid.call(new_data)
           
           response.status = 201
-          response['Location'] = "#{@api_root}/group/#{new_bid.group.id}/account/#{new_bid.account.id}"
+          response['Location'] = "#{@api_root}/groups/#{new_bid.group.id}"
           { message: 'Bid saved', data: new_bid }.to_json
-        rescue ArgumentError
-          r.halt 400, { message: 'Illegal Request' }.to_json
+        rescue StandardError => error
+          #puts error.backtrace
+          #puts error.inspect
+          r.halt 404, { message: 'Unavailable Request' }.to_json
         rescue Sequel::MassAssignmentRestriction
           r.halt 400, { message: 'Illegal Request' }.to_json
         rescue StandardError => error

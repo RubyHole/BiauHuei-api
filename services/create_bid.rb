@@ -4,13 +4,19 @@ module BiauHuei
   # Create a new bid.
   class CreateBid
     
-    def self.call(group_id:, account_id:, bid_price:)
+    def self.call(auth_account:, group_id:, bid_price:)
       
       group = BiauHuei::Group.find(id: group_id)
-      account = BiauHuei::Account.find(id: account_id)
-      
-      raise('Could not save bid') if group.nil? || account.nil?
+      account = BiauHuei::Account.find(username: auth_account['username'])
         
+      raise if group.nil? || account.nil?
+      
+      group_manager = GroupManager.new(group, Time.new()).auto_bid
+      
+      policy = GroupPolicy.new(group_manager, account)
+      raise unless policy.can_bid?
+      raise unless policy.legal_bid_price?(bid_price)
+      
       new_bid = BiauHuei::Bid.create(
         bid_price: bid_price,
         submit_type: 'User',

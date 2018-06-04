@@ -4,7 +4,7 @@ module BiauHuei
   # Create a new group.
   class CreateGroup
     
-    def self.call(title:, description:, round_interval:, round_fee:, bidding_duration:, bidding_upset_price:, leader:, members:)
+    def self.call(auth_account:, title:, description:, round_interval:, round_fee:, bidding_duration:, bidding_upset_price:, members:)
       
       new_group = BiauHuei::Group.create(
         title: title,
@@ -15,7 +15,7 @@ module BiauHuei
         bidding_upset_price: bidding_upset_price,
       )
       
-      leader = BiauHuei::Account.find(username: leader)
+      leader = BiauHuei::Account.find(username: auth_account['username'])
       new_group.leader = leader
       
       members.each do |username|

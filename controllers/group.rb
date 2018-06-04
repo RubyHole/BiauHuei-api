@@ -15,8 +15,7 @@ module BiauHuei
       r.is do
         # GET api/v1/groups
         r.get do
-          account_id = Account.first(username: @auth_account['username']).id
-          GetParticipatedGroups.call(account_id: account_id, time: Time.new())
+          GetParticipatedGroups.call(auth_account: @auth_account, time: Time.new())
         rescue StandardError => error
           puts error.backtrace
           puts error.inspect
@@ -27,8 +26,9 @@ module BiauHuei
       
       r.is 'new' do
         # POST api/v1/groups/new
-        r.post do
+        r.post do          
           new_data = JsonRequestBody.parse_symbolize(request.body.read)
+                                    .merge(auth_account: @auth_account)
           new_group = CreateGroup.call(new_data)
           
           response.status = 201
@@ -47,13 +47,12 @@ module BiauHuei
       r.is Integer do |group_id|
         # GET api/v1/groups/[group_id]
         r.get do
-          account_id = Account.first(username: @auth_account['username']).id
-          GetGroupInfo.call(group_id: group_id, account_id: account_id, time: Time.new())
+          GetGroupInfo.call(group_id: group_id, auth_account: @auth_account, time: Time.new())
         rescue StandardError => error
           puts error.backtrace
           puts error.inspect
           #puts error.message
-          r.halt 403, { message: 'Forbidden Request' }.to_json
+          r.halt 404, { message: 'Group not found' }.to_json
         end
       end
       

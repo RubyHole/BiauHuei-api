@@ -4,6 +4,11 @@ require 'rake/testtask'
 
 task default: [:spec]
 
+desc 'List all Rake tasks'
+task :tasks do
+  sh 'rake -T'
+end
+
 desc 'Tests API specs only'
 task :api_spec do
   sh 'ruby specs/api_spec.rb'

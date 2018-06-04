@@ -7,7 +7,7 @@ API to securely store and retrieve the bids information for private ROSCAs playe
 All routes return Json
 
 - GET `/`: Root route shows if Web API is running
-- GET `api/v1/accounts/username/[username]`: checks whether an [username] is existed
+- GET `api/v1/accounts/existed/[username]`: checks whether an [username] is existed
 - GET `api/v1/groups`: returns leaded or participated groups
 - GET `api/v1/groups/[group_id]`: returns the assigned group information
 - POST `api/v1/auth/register`: email verification of registration

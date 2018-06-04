@@ -1,18 +1,7 @@
 # frozen_string_literal: true
 
-# BidsManager
-class BidsManager
-  
-  ## Call setup once to pass in configvariable with DB_KEY attribute
-  #def self.setup(config)
-  #    @config = config
-  #end
-  #
-  #def self.lastest_hash(group)
-  #  lastest_hash = @config.DB_KEY
-  #end
-  
-  attr_accessor :time, :round_id_map, :account_id_map
+# GroupManager
+class GroupManager
   
   def self.setup(account_model, group_model, bid_model)
     @@Account = account_model
@@ -26,6 +15,8 @@ class BidsManager
     @round_id_map = __get_round_id_map__(group)
     @account_id_map = __get_account_id_map__(group)
   end
+  
+  attr_accessor :group, :time, :round_id_map, :account_id_map
   
   def leader
     {
@@ -58,11 +49,13 @@ class BidsManager
   def bids
     bids = @group.bids.map do |bid|
       {
+        account_id: bid.account_id,
         bid_price: bid.bid_price,
+        submit_type: bid.submit_type,
         created_at: bid.created_at,
       }
     end
-    bids.sort_by { |bid| bid[:created_at] }
+    #bids.sort_by { |bid| bid[:created_at] }
   end
   
   def valid_round_id?(round_id)

@@ -45,10 +45,10 @@ module BiauHuei
         end
       end
       
-      r.is 'username', String do |username|
-        # GET api/v1/accounts/username/[username]
+      r.is 'existed', String do |username|
+        # GET api/v1/accounts/existed/[username]
         r.get do
-          raise StandardError @auth_account['username'].nil?
+          raise StandardError if @auth_account['username'].nil?
           account = Account.first(username: username)
           JSON.pretty_generate({
             'is_existed': account.nil? ? false : true
