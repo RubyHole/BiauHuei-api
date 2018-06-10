@@ -6,6 +6,9 @@ require 'sequel'
 module BiauHuei
   # Models an account
   class Account < Sequel::Model
+    plugin :single_table_inheritance, :type,
+           model_map: { 'email' => 'BiauHuei::EmailAccount',
+                        'sso'   => 'BiauHuei::SsoAccount' }
       
     one_to_many :leaded_groups, class: :'BiauHuei::Group', key: :leader_id
     #plugin :association_dependencies, leaded_groups: :destroy
@@ -21,17 +24,6 @@ module BiauHuei
     
     plugin  :whitelist_security
     set_allowed_columns :username, :email, :password
-    
-    
-    def password=(new_password)
-      self.salt = SecureDB.new_salt
-      self.password_hash = SecureDB.hash_password(salt, new_password)
-    end
-    
-    def password?(try_password)
-      try_hashed = SecureDB.hash_password(salt, try_password)
-      try_hashed == password_hash
-    end
     
     def to_json(options = {})
       JSON.pretty_generate(

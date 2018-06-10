@@ -20,6 +20,7 @@ module BiauHuei
       
       members.each do |username|
         member = BiauHuei::Account.find(username: username)
+        raise('Could not save group') unless member.username != leader.username
         new_group.add_member(member)
       end
       

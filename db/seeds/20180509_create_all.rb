@@ -15,7 +15,7 @@ GROUPS_INFO = YAML.load_file("#{DIR}/group_seeds.yml") unless defined? GROUPS_IN
 
 def create_accounts
   ACCOUNTS_INFO.each do |account_info|
-    BiauHuei::Account.create(account_info)
+    BiauHuei::EmailAccount.create(account_info)
   end
 end
 
