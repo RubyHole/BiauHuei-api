@@ -13,6 +13,7 @@ All routes return Json
 - POST `api/v1/auth/register`: email verification of registration
 - POST `api/v1/accounts/authenticate`: authenticates with a given account
 - POST `api/v1/accounts/authenticate/google_sso`: authenticates with google single sign-on (SSO)
+- POST `api/v1/accounts/authenticate/github_sso`: authenticates with github single sign-on (SSO)
 - POST `api/v1/accounts/new`: creates a new account
 - POST `api/v1/groups/new`: creates a new group
 - POST `api/v1/bid/new`: submits a bid

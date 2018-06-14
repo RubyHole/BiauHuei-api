@@ -72,8 +72,17 @@ module BiauHuei
           end
         end
         
-        #r.is 'github_sso' do
-        #end
+        r.is 'github_sso' do
+          # POST api/v1/accounts/authenticate/github_sso
+          r.post do
+            access_token = JsonRequestBody.parse_symbolize(request.body.read)[:access_token]
+            auth_account = AuthenticateSsoAccount.call(access_token, GithubAccount)
+            JSON.pretty_generate(auth_account)
+          rescue StandardError => error
+            puts "ERROR: #{error.class}: #{error.message}"
+            r.halt '403', { message: 'Invalid credentials' }.to_json
+          end
+        end
       end
     end
   end
