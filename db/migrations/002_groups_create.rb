@@ -16,9 +16,6 @@ Sequel.migration do
       Float :bidding_duration, null: false
       Integer :bidding_upset_price, null: false
       
-      #DateTime :rounds_start_date_time
-      #Integer :current_round_id
-      
       DateTime :created_at
       DateTime :updated_at
     end

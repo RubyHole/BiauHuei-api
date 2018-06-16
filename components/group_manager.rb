@@ -112,10 +112,14 @@ class GroupManager
   end
   
   def highest_bid(round_id)
+    # When meeting the same bid prices, the bid submitted earlier has the higher priority.
     return nil if !is_round_finished(round_id)
     return nil if !round_is_bided?(round_id)
     bids = bids_by_round(round_id)
-    bids.sort_by { |bid| bid[:bid_price] }.last
+    highest_price = bids.sort_by { |bid| bid[:bid_price] }
+                        .last[:bid_price]
+    bids.select { |bid| bid[:bid_price] == highest_price }
+        .sort_by { |bid| bid[:created_at] }.first
   end
   
   def is_round_finished(round_id)

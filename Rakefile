@@ -94,7 +94,7 @@ namespace :db do
   task reseed: [:reset_seeds, :seed]
 end
 
-namespace :crypto do
+namespace :generate do
   desc 'Create sample cryptographic key for database'
   task :db_key do
     require_relative 'lib/secure_db'
@@ -105,5 +105,14 @@ namespace :crypto do
   task :msg_key do
     require_relative 'lib/auth_token'
     puts "MSG_KEY: #{AuthToken.generate_key}"
+  end
+  
+  desc 'Create sample private/public keypair for signed communication'
+  task :signing_keypair do
+    require './lib/signed_request'
+    keypair = SignedRequest.generate_keypair
+
+    puts "SIGNING_KEY: #{keypair[:signing_key]}"
+    puts " VERIFY_KEY: #{keypair[:verify_key]}"
   end
 end

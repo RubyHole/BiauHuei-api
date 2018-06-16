@@ -6,7 +6,7 @@ require_relative 'securable'
 # Security Primitives for Database
 class SecureDB
   
-  extend Securablez
+  extend Securable
   
   # Encrypt or else return nil if data is nil
   def self.encrypt(plaintext)

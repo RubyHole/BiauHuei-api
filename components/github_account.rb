@@ -6,7 +6,7 @@ class GithubAccount
   end
   
   def username
-    @github_account['name'] + '@github'
+    @github_account['login'] + '@github'
   end
   
   def email

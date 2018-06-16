@@ -19,13 +19,11 @@ module BiauHuei
     end
 
     def email_body(registration)
-      verification_url = registration['verification_url']
-
-      <<~END_EMAIL
-        <H1>Credent Registration Received<H1>
-        <p>Please <a href=\"#{verification_url}\">click here</a> to validate your
-        email. You will be asked to set a password to activate your account.</p>
-      END_EMAIL
+      verification_url = registration[:verification_url]
+      
+      File.open("views/verification_email.html", "r") do |f|
+        f.read.gsub! '---verification_url---', verification_url
+      end
     end
 
     # rubocop:disable Metrics/MethodLength
@@ -36,7 +34,7 @@ module BiauHuei
         SENDGRID_URL,
         json: {
           personalizations: [{
-            to: [{ 'email' => registration['email'] }]
+            to: [{ 'email' => registration[:email] }]
           }],
           from: { 'email' => 'noreply@biauhuei.com' },
           subject: 'BiauHuei Registration Verification',
@@ -46,7 +44,9 @@ module BiauHuei
           ]
         }
       )
-    rescue StandardError
+    rescue StandardError => error
+      puts error.inspect
+      puts error.message
       raise(InvalidRegistration,
             'Could not send verification email; please check email address')
     end
