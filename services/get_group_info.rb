@@ -85,7 +85,7 @@ module BiauHuei
         'number_of_bids': 1.to_s,
         'winner': {
           'username': @group.leader.username,
-          'bid_price': @group.bidding_upset_price.to_s,  
+          'bid_price': 0,  
         },
         'user': {
           round_fee: @group.round_fee.to_s,

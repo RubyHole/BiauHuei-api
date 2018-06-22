@@ -170,8 +170,8 @@ class GroupManager
   end
   
   def total_saving(round_id)
-    # round_id start from 1, should add leader's bid price
-    base_saving = @group.round_fee * @group.members.length + @group.bidding_upset_price
+    # round_id start from 1
+    base_saving = @group.round_fee * @group.members.length
     rids = round_ids.select { |i| i < round_id }
     rids.reduce(base_saving) do |sum, rid|
       sum + highest_bid(rid)[:bid_price]
